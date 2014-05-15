@@ -1,0 +1,16 @@
+[
+{
+  "modid": "colorMod",
+  "name": "Color Mod",
+  "description": "ModJam4 mod",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authors": ["Delma"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

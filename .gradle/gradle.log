@@ -1,0 +1,28 @@
+****************************
+ Powered By MCP:            
+ http://mcp.ocean-labs.de/  
+ Searge, ProfMobius, Fesh0r,
+ R4wk, ZeuX, IngisKahn      
+ MCP Data version : unknown
+****************************
+:extractUserDev SKIPPED
+:getAssetsIndex
+:getAssets
+:copyAssets
+:downloadClient SKIPPED
+:downloadServer SKIPPED
+:mergeJars SKIPPED
+:applyBinPatches SKIPPED
+:downloadMcpTools
+:genSrgs SKIPPED
+:deobfBinJar SKIPPED
+:extractNatives
+:setupDevWorkspace
+:eclipseClasspath
+:eclipseJdt
+:eclipseProject
+:eclipse
+
+BUILD SUCCESSFUL
+
+Total time: 35.486 secs
