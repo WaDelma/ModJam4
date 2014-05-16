@@ -1,6 +1,6 @@
 [
 {
-  "modid": "colorMod",
+  "modid": "colormod",
   "name": "Color Mod",
   "description": "ModJam4 mod",
   "version": "${version}",
