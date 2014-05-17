@@ -14,7 +14,8 @@ import net.minecraftforge.fluids.IFluidTank;
 
 public enum LiquidHelper {
 	INSTANCE;
-	public void drain(World world, int x, int y, int z, IFluidTank tank) {
+	public boolean drain(World world, int x, int y, int z, IFluidTank tank,
+			boolean doit) {
 		FluidStack fluidStack = tank.getFluid();
 		Fluid fluid = null;
 		if (fluidStack != null) {
@@ -29,17 +30,19 @@ public enum LiquidHelper {
 			if (tile instanceof IFluidHandler) {
 				IFluidHandler fluidHandler = (IFluidHandler) tile;
 				ForgeDirection fromDir = dir.getOpposite();
-				if (fluid != null || fluidHandler.canDrain(fromDir, fluid)) {
+				if (fluid == null || fluidHandler.canDrain(fromDir, fluid)) {
 					drainable.put(fromDir, fluidHandler);
 				}
 			}
 		}
 		int spaceLeft = tank.getCapacity() - tank.getFluidAmount();
-		int drainAmount = (int) (spaceLeft / (drainable.size() + 1));
+		int drainAmount = spaceLeft / (drainable.size() + 1);
+		int drainedAmount = 0;
 		for (Entry<ForgeDirection, IFluidHandler> entry : drainable.entrySet()) {
-			tank.fill(
-					entry.getValue().drain(entry.getKey(), drainAmount, true),
-					true);
+			drainedAmount += tank.fill(
+					entry.getValue().drain(entry.getKey(), drainAmount, doit),
+					doit);
 		}
+		return drainedAmount != 0;
 	}
 }

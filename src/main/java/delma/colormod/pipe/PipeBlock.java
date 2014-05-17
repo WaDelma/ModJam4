@@ -23,7 +23,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import delma.colormod.Colormod;
 
 public class PipeBlock extends Block implements ITileEntityProvider {
 
@@ -32,20 +31,6 @@ public class PipeBlock extends Block implements ITileEntityProvider {
 		setCreativeTab(CreativeTabs.tabBlock);
 	}
 
-	// public void onNeighborBlockChange(World world, int x, int y, int z,
-	// Block block) {
-	// if (block instanceof IFluidHandler) {
-	// for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-	// int xx = x + dir.offsetX;
-	// int yy = y + dir.offsetY;
-	// int zz = z + dir.offsetZ;
-	// Block temp = world.getBlock(xx, yy, zz);
-	// if (temp instanceof IFluidHandler) {
-	// this.
-	// }
-	// }
-	// }
-	// }
 	static final float THICKNESS = 0.0625F * 4;
 
 	@Override
@@ -65,7 +50,13 @@ public class PipeBlock extends Block implements ITileEntityProvider {
 		float center = 0.5F;
 		float end = 1.0F;
 
-		boolean oneIs = west || east || north || south;
+		boolean oneIs = west || east || north || south || down || up;
+
+		if (!oneIs) {
+			setBlockBounds(min, min, min, max, max, max);
+			super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
+			return;
+		}
 
 		if ((!west || !east) && oneIs) {
 			if (west) {
@@ -77,7 +68,7 @@ public class PipeBlock extends Block implements ITileEntityProvider {
 				super.addCollisionBoxesToList(world, x, y, z, aabb, list,
 						entity);
 			}
-		} else {
+		} else if (west && east) {
 			setBlockBounds(start, min, min, end, max, max);
 			super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
 		}
@@ -92,7 +83,7 @@ public class PipeBlock extends Block implements ITileEntityProvider {
 				super.addCollisionBoxesToList(world, x, y, z, aabb, list,
 						entity);
 			}
-		} else {
+		} else if (north && south) {
 			setBlockBounds(min, min, start, max, max, end);
 			super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
 		}
@@ -107,7 +98,7 @@ public class PipeBlock extends Block implements ITileEntityProvider {
 				super.addCollisionBoxesToList(world, x, y, z, aabb, list,
 						entity);
 			}
-		} else {
+		} else if (down && up) {
 			setBlockBounds(min, start, min, max, end, max);
 			super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
 		}
@@ -137,7 +128,7 @@ public class PipeBlock extends Block implements ITileEntityProvider {
 		float minY = min;
 		float maxY = max;
 
-		boolean oneIs = west || east || north || south;
+		boolean oneIs = west || east || north || south || down || up;
 
 		if ((!west || !east) && oneIs) {
 			if (west) {
@@ -145,7 +136,7 @@ public class PipeBlock extends Block implements ITileEntityProvider {
 			} else if (east) {
 				maxX = end;
 			}
-		} else {
+		} else if (west && east) {
 			minX = start;
 			maxX = end;
 		}
@@ -156,7 +147,7 @@ public class PipeBlock extends Block implements ITileEntityProvider {
 			} else if (south) {
 				maxZ = end;
 			}
-		} else {
+		} else if (north && south) {
 			minZ = start;
 			maxZ = end;
 		}
@@ -167,7 +158,7 @@ public class PipeBlock extends Block implements ITileEntityProvider {
 			} else if (up) {
 				maxY = end;
 			}
-		} else {
+		} else if (down && up) {
 			minY = start;
 			maxY = end;
 		}
@@ -190,10 +181,10 @@ public class PipeBlock extends Block implements ITileEntityProvider {
 	// return 0;
 	// }
 
-	@Override
-	public int getRenderType() {
-		return Colormod.PIPE_RENDERER_ID;
-	}
+	// @Override
+	// public int getRenderType() {
+	// return Colormod.PIPE_RENDERER_ID;
+	// }
 
 	@Override
 	public boolean renderAsNormalBlock() {

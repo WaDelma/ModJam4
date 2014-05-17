@@ -1,52 +1,79 @@
 package delma.colormod.pipe;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import delma.colormod.LiquidHelper;
-import delma.colormod.color.ColorLiquid;
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.TileFluidHandler;
+import delma.colormod.LiquidHelper;
 
 public class PipeTileEntity extends TileFluidHandler {
 
+	private int curTime;
+
 	public PipeTileEntity() {
-		tank.setCapacity(FluidContainerRegistry.BUCKET_VOLUME * 2);
+		tank.setCapacity(FluidContainerRegistry.BUCKET_VOLUME / 2);
 	}
 
+	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
-		NBTTagCompound compound = tag.getCompoundTag("slot");
-		if (compound != null) {
-			tank.setFluid(FluidStack.loadFluidStackFromNBT(compound));
-		}
+		tag.setInteger("curTime", curTime);
 	}
 
+	@Override
 	public void writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
-		if (tank.getFluid() != null) {
-			NBTTagCompound compound = new NBTTagCompound();
-			tank.getFluid().writeToNBT(compound);
-			tag.setTag("slot", compound);
+		curTime = tag.getInteger("curTime");
+	}
+
+	@Override
+	public void updateEntity() {
+		if (!LiquidHelper.INSTANCE.drain(worldObj, xCoord, yCoord, zCoord,
+				tank, false)) {
+			return;
+		}
+		FluidStack fluidStack = tank.getFluid();
+		float time = 10;
+		if (fluidStack != null) {
+			time = Math.abs(fluidStack.getFluid().getDensity()) / 100f;
+		}
+		if (curTime < time) {
+			curTime++;
+		} else if (LiquidHelper.INSTANCE.drain(worldObj, xCoord, yCoord,
+				zCoord, tank, true)) {
+			if (!worldObj.isRemote) {
+				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+				markDirty();
+			}
+			curTime = 0;
 		}
 	}
 
-	public void updateEntity() {
-		LiquidHelper.INSTANCE.drain(worldObj, xCoord, yCoord, zCoord, tank);
+	@Override
+	public Packet getDescriptionPacket() {
+		NBTTagCompound tagCompound = new NBTTagCompound();
+		writeToNBT(tagCompound);
+		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0,
+				tagCompound);
 	}
 
+	@Override
+	public void onDataPacket(NetworkManager networkManager,
+			S35PacketUpdateTileEntity packet) {
+		readFromNBT(packet.func_148857_g());
+
+	}
+
+	@Override
 	public boolean canUpdate() {
 		return true;
+	}
+
+	public IFluidTank getTank() {
+		return tank;
 	}
 }
