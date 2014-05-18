@@ -1,17 +1,13 @@
 package delma.colormod.liquifier;
 
-import delma.colormod.color.ColorLiquid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.TileFluidHandler;
+import delma.colormod.color.ColorLiquid;
 
 public class LiquifierTileEntity extends TileFluidHandler {
 	public ItemStack slot;
@@ -19,9 +15,10 @@ public class LiquifierTileEntity extends TileFluidHandler {
 	private final int time = 30;
 
 	public LiquifierTileEntity() {
-		tank.setCapacity(FluidContainerRegistry.BUCKET_VOLUME * 10);
+		tank = new LiquidTank(this, FluidContainerRegistry.BUCKET_VOLUME * 10);
 	}
 
+	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
 		NBTTagCompound compound = tag.getCompoundTag("slot");
@@ -31,6 +28,7 @@ public class LiquifierTileEntity extends TileFluidHandler {
 		currentTime = tag.getInteger("currentTime");
 	}
 
+	@Override
 	public void writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
 		if (slot != null) {
@@ -40,7 +38,8 @@ public class LiquifierTileEntity extends TileFluidHandler {
 		}
 		tag.setInteger("currentTime", currentTime);
 	}
-	
+
+	@Override
 	public void updateEntity() {
 		if (slot == null) {
 			currentTime = time;
@@ -68,6 +67,7 @@ public class LiquifierTileEntity extends TileFluidHandler {
 		}
 	}
 
+	@Override
 	public boolean canUpdate() {
 		return true;
 	}

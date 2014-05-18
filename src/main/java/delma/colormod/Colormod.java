@@ -2,6 +2,7 @@ package delma.colormod;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.Mod;
@@ -14,6 +15,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import delma.colormod.color.ColorLiquid;
+import delma.colormod.color.FluidDataRegistry;
 import delma.colormod.liquifier.LiquifierBlock;
 import delma.colormod.liquifier.LiquifierContainer;
 import delma.colormod.liquifier.LiquifierGui;
@@ -30,15 +32,20 @@ import delma.colormod.vase.VaseTileEntityRenderer;
 public class Colormod {
 	public static final String MODID = "colormod";
 	public static final String VERSION = "0.1";
-	// public static final int PIPE_RENDERER_ID = RenderingRegistry
-	// .getNextAvailableRenderId();
 	private LiquifierBlock liquifier;
 	private VaseBlock vase;
 	private PipeBlock pipe;
 	private ColorLiquid colorLiquid;
 
+	public static final String PIPE_TILE = "pipeTile";
+	public static final String VASE_TILE = "vaseTile";
+
+	public static final String COLOR_DATA_FILE = MODID + ".data";
+
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
+		MinecraftForge.EVENT_BUS.register(new FluidDataRegistry());
+
 		liquifier = new LiquifierBlock();
 		liquifier.setBlockTextureName(MODID + ":" + "liquifier");
 		GameRegistry.registerBlock(liquifier, "liquifier");
@@ -50,17 +57,17 @@ public class Colormod {
 		vase.setBlockTextureName(MODID + ":" + "vase");
 		GameRegistry.registerBlock(vase, "vase");
 		LanguageRegistry.addName(vase, "Vase");
-		GameRegistry.registerTileEntity(VaseTileEntity.class, "vaseTile");
+		GameRegistry.registerTileEntity(VaseTileEntity.class, VASE_TILE);
 
 		pipe = new PipeBlock();
 		pipe.setBlockTextureName(MODID + ":" + "pipe");
 		GameRegistry.registerBlock(pipe, "pipe");
 		LanguageRegistry.addName(pipe, "Pipe");
-		GameRegistry.registerTileEntity(PipeTileEntity.class, "pipeTile");
+		GameRegistry.registerTileEntity(PipeTileEntity.class, PIPE_TILE);
 
-		// RenderingRegistry.registerBlockHandler(new PipeRenderer());
 		colorLiquid = new ColorLiquid();
 		FluidRegistry.registerFluid(colorLiquid);
+		FluidDataRegistry.registerFluid(colorLiquid, "colorLiquidTile");
 
 		NetworkRegistry.INSTANCE.registerGuiHandler(MODID, new IGuiHandler() {
 

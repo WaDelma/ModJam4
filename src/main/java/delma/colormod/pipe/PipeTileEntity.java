@@ -9,13 +9,14 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.TileFluidHandler;
 import delma.colormod.LiquidHelper;
+import delma.colormod.liquifier.LiquidTank;
 
 public class PipeTileEntity extends TileFluidHandler {
 
 	private int curTime;
 
 	public PipeTileEntity() {
-		tank.setCapacity(FluidContainerRegistry.BUCKET_VOLUME / 2);
+		tank = new LiquidTank(this, FluidContainerRegistry.BUCKET_VOLUME / 2);
 	}
 
 	@Override

@@ -6,12 +6,13 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.TileFluidHandler;
 import delma.colormod.LiquidHelper;
+import delma.colormod.liquifier.LiquidTank;
 
 public class VaseTileEntity extends TileFluidHandler {
 	private int curTime;
 
 	public VaseTileEntity() {
-		tank.setCapacity(FluidContainerRegistry.BUCKET_VOLUME * 10);
+		tank = new LiquidTank(this, FluidContainerRegistry.BUCKET_VOLUME * 10);
 	}
 
 	@Override

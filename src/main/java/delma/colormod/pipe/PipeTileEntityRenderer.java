@@ -50,6 +50,7 @@ public class PipeTileEntityRenderer extends TileEntitySpecialRenderer {
 		int zz = tile.zCoord;
 
 		GL11.glPushMatrix();
+		GL11.glDisable(GL11.GL_LIGHTING);
 		t.startDrawingQuads();
 		t.setBrightness(block.getMixedBrightnessForBlock(world, xx, yy, zz));
 
@@ -95,6 +96,7 @@ public class PipeTileEntityRenderer extends TileEntitySpecialRenderer {
 		renderPipe(tile, x, y, z, t, THICKNESS, icon, icon1);
 
 		t.draw();
+		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glPopMatrix();
 	}
 

@@ -63,14 +63,15 @@ public class VaseTileEntityRenderer extends TileEntitySpecialRenderer {
 		IFluidTank tank = tileEntity.getTank();
 		float procents = tank.getFluidAmount() / (float) tank.getCapacity();
 		FluidStack fluidStack = tank.getFluid();
+		float thickness = 0.4999f;
 		if (fluidStack != null) {
 			icon = getIconSafe(fluidStack.getFluid().getFlowingIcon());
-			renderThickCube(t, icon, x, y, z, 0.5 * procents);
+			renderThickCube(t, icon, x, y, z, thickness * procents);
 		}
 
 		icon = getBlockIconFromSideAndMetadata(block, 0,
 				tile.getBlockMetadata());
-		renderThickCube(t, icon, x, y, z, 0.5);
+		renderThickCube(t, icon, x, y, z, thickness);
 
 		t.draw();
 		GL11.glPopMatrix();
